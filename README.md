@@ -8,7 +8,7 @@ Config files are put at `~/.expandup/`.
 
 ## Purpose
 
-Riot for present complex frontend.  
+Riot against present complex frontend.  
 What we want to do, is to generate one index file, and use already designed components, and serve it.  
 Inspired by Go.
 
@@ -94,3 +94,19 @@ Config file style is very simple.
 **Usage**
 
 Write your contents, and save it as `COMMAND_NAME` in `~/.expandup/`.
+
+And, if you put `.expandup.imports`, expandup can detect it, and include your another expandup config files. You must put directory name, not file name.  
+By using this, git integration becomes so easy.
+
+Here is a sample of `.expandup.imports`.
+
+```
+github.com/Qs-F/hoge
+git.de-liler.com/Qs-F/hoge
+```
+
+Any happend errors are ignored. If you have some trouble and want to see log, use `-v` option.
+
+## Auto update
+
+head-up is easy. once your COMMAND file is updated, and re-run expandup on the same file, you can update it.
