@@ -110,3 +110,9 @@ Any happend errors are ignored. If you have some trouble and want to see log, us
 ## Auto update
 
 head-up is easy. once your COMMAND file is updated, and re-run expandup on the same file, you can update it.
+
+## All commands and options
+
+**expandup -isolate-command CONFIG_FILE_NAME**
+
+Only for debug. You can test one command file.
