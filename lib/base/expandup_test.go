@@ -174,8 +174,8 @@ func TestCommit(t *testing.T) {
 	}
 }
 
-func TestMustup1(t *testing.T) {
-	t.Log(Mustup(`
+func TestMustUp1(t *testing.T) {
+	t.Log(MustUp(`
 <!DOCTYPE html>
 <html>
 	<head>
@@ -186,8 +186,8 @@ func TestMustup1(t *testing.T) {
 </html>`).Compose())
 }
 
-func TestMustup2(t *testing.T) {
-	t.Log(Mustup(`
+func TestMustUp2(t *testing.T) {
+	t.Log(MustUp(`
 <!DOCTYPE html>
 <html>
 	<head>
@@ -200,8 +200,8 @@ func TestMustup2(t *testing.T) {
 </html>`).Compose())
 }
 
-func TestMustup3(t *testing.T) {
-	t.Log(Mustup(`
+func TestMustUp3(t *testing.T) {
+	t.Log(MustUp(`
 <!DOCTYPE html>
 <html>
 	<head>
@@ -216,8 +216,8 @@ func TestMustup3(t *testing.T) {
 `).Compose())
 }
 
-func TestMustup4(t *testing.T) {
-	t.Log(Mustup(`
+func TestMustUp4(t *testing.T) {
+	t.Log(MustUp(`
 <!DOCTYPE html>
 <html>
 	<head>
@@ -226,6 +226,19 @@ func TestMustup4(t *testing.T) {
 		<h1>Hello</h1>
 		<!-- (EXPANDUP END) -->
 		<!-- EXPANDUP RIOT -->
+	</head>
+	<body>
+	</body>
+</html>
+`).Compose())
+}
+
+func TestMustUp5(t *testing.T) {
+	t.Log(MustUp(`
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- EXPANDUP RECURSIVE -->
 	</head>
 	<body>
 	</body>

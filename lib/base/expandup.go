@@ -180,6 +180,18 @@ func getFile(filename string) ([]byte, error) {
 	return b, nil
 }
 
+// func useFile(filename string) (*Document, bool, error) {
+// 	b, err := getFile(filename)
+// 	if err != nil {
+// 		return nil, false, err
+// 	}
+// 	d, t, err := Up(string(b))
+// 	if err != nil {
+// 		return nil, t, err
+// 	}
+// 	return d, t, nil
+// }
+
 func replace(b *Block) (*Block, bool, error) { // if replaced, return true
 	var status bool
 	if b.Name == "" {
@@ -189,6 +201,10 @@ func replace(b *Block) (*Block, bool, error) { // if replaced, return true
 	if err != nil {
 		return nil, false, err
 	}
+	// file, t, err := useFile(b.Name)
+	// if err != nil {
+	// 	return nil, t, err
+	// }
 	strfile := EXPANDUP_START_PREFIX + b.Name + EXPANDUP_START_SUFFIX + "\n" + string(file) + EXPANDUP_END + "\n"
 	m1 := md5.Sum([]byte(combine(trimLeftSpaces(splitDoc(strfile)))))
 	m2 := md5.Sum([]byte(combine(trimLeftSpaces(b.Content))))
@@ -227,7 +243,7 @@ func Up(s string) (*Document, bool, error) {
 	return result, status, nil
 }
 
-func Mustup(s string) *Document {
+func MustUp(s string) *Document {
 	d, b, err := Up(s)
 	fmt.Println("| ", b, " | ", err, " |")
 	return d
