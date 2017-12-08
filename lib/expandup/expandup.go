@@ -1,3 +1,4 @@
+// package expandup(lib/base) is helper package of expandup main pkg.
 package expandup
 
 import (
@@ -14,9 +15,9 @@ import (
 )
 
 const (
-	EXPANDUP_START_PREFIX = "<!-- EXPANDUP "
-	EXPANDUP_START_SUFFIX = " -->"
-	EXPANDUP_END          = "<!-- (EXPANDUP END) -->"
+	_EXPANDUP_START_PREFIX = "<!-- EXPANDUP "
+	_EXPANDUP_START_SUFFIX = " -->"
+	_EXPANDUP_END          = "<!-- (EXPANDUP END) -->"
 )
 
 const (
@@ -46,9 +47,9 @@ func splitDoc(s string) []string {
 
 func isStartLine(line string) (bool, string) {
 	line = strings.TrimSpace(line)
-	if strings.HasPrefix(line, EXPANDUP_START_PREFIX) && strings.HasSuffix(line, EXPANDUP_START_SUFFIX) {
-		name := strings.TrimPrefix(line, EXPANDUP_START_PREFIX)
-		name = strings.TrimSuffix(name, EXPANDUP_START_SUFFIX)
+	if strings.HasPrefix(line, _EXPANDUP_START_PREFIX) && strings.HasSuffix(line, _EXPANDUP_START_SUFFIX) {
+		name := strings.TrimPrefix(line, _EXPANDUP_START_PREFIX)
+		name = strings.TrimSuffix(name, _EXPANDUP_START_SUFFIX)
 		name = strings.TrimSpace(name)
 		return true, name
 	}
@@ -57,16 +58,17 @@ func isStartLine(line string) (bool, string) {
 
 func isEndLine(line string) bool {
 	line = strings.TrimSpace(line)
-	if strings.EqualFold(line, EXPANDUP_END) {
+	if strings.EqualFold(line, _EXPANDUP_END) {
 		return true
 	}
 	return false
 }
 
+// MarkerBuf is used for preproccess of generating each Blocks.
 type MarkerBuf struct {
-	Kind    int
-	Name    string
-	Content []string
+	Kind    int      // Kind means the specific lines are in EXPANDUP, or not.
+	Name    string   // Name means the lines are inside of EXPANDUP COMMAND
+	Content []string // Content is the handling of lines,
 }
 
 func (m *MarkerBuf) set(kind int, name string, firstContent string) {
@@ -97,9 +99,13 @@ func (m *MarkerBuf) equalKind(kind int) bool {
 	return false
 }
 
+// Block is for divided file content.
+// Each Blocks handle each lines.
+// Name is command name. Lines with no command, Name becomes empty string.
+// Content is lines.
 type Block struct {
-	Name    string
-	Content []string
+	Name    string   // Name means Content(lines) are inside the EXPANDUP COMMAND. COMMAND equals Name.
+	Content []string // Content is each lines.
 }
 
 func (b *Block) combine() string {
@@ -126,8 +132,10 @@ func (m *MarkerBuf) commit(num int) *Block {
 	return b
 }
 
+// type Document is slice of pointer struct of Block.
 type Document []*Block
 
+// Compose generates string content of pointer struct of Document.
 func (d *Document) Compose() string {
 	s := ""
 	for _, v := range *d {
@@ -205,7 +213,7 @@ func replace(b *Block) (*Block, bool, error) { // if replaced, return true
 	// if err != nil {
 	// 	return nil, t, err
 	// }
-	strfile := EXPANDUP_START_PREFIX + b.Name + EXPANDUP_START_SUFFIX + "\n" + string(file) + EXPANDUP_END + "\n"
+	strfile := _EXPANDUP_START_PREFIX + b.Name + _EXPANDUP_START_SUFFIX + "\n" + string(file) + _EXPANDUP_END + "\n"
 	m1 := md5.Sum([]byte(combine(trimLeftSpaces(splitDoc(strfile)))))
 	m2 := md5.Sum([]byte(combine(trimLeftSpaces(b.Content))))
 	s := []string{}
@@ -219,6 +227,8 @@ func replace(b *Block) (*Block, bool, error) { // if replaced, return true
 	return b, status, nil
 }
 
+// Up returns pointer struct of Docuemnt, document changed status, and error.
+// If it has any changes, middle return item becomes true. On other cases, the value becomes false.
 func Up(s string) (*Document, bool, error) {
 	result := &Document{}
 	blocks := parse(splitDoc(s))
@@ -243,8 +253,12 @@ func Up(s string) (*Document, bool, error) {
 	return result, status, nil
 }
 
+// MustUp returns only pointer struct of Document, with no error.
+// This must be used only for easy buildable main package. DONNOT use inside your 3rd party packages.
+// Handling errors are important. For general usages, Up must be used.
 func MustUp(s string) *Document {
 	d, b, err := Up(s)
 	fmt.Println("| ", b, " | ", err, " |")
 	return d
+
 }
