@@ -7,10 +7,12 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"path/filepath"
 	"strings"
 	"unicode"
 
+	"github.com/Qs-F/walkup"
 	homedir "github.com/mitchellh/go-homedir"
 )
 
@@ -177,11 +179,24 @@ func parse(slice []string) *Document {
 }
 
 func getFile(filename string) ([]byte, error) {
+	path := ""
+	current, err := os.Getwd()
+	if err != nil {
+		return nil, err
+	}
+	list := walkup.Walkup(current, ".expandup", 0)
+	if len(list) > 0 {
+		path = filepath.Join(list[0], filename)
+	}
+	b, err := ioutil.ReadFile(path)
+	if err == nil {
+		return b, nil
+	}
 	home, err := homedir.Dir()
 	if err != nil {
 		return nil, err
 	}
-	b, err := ioutil.ReadFile(filepath.Join(home, "/.expandup/", filename))
+	b, err = ioutil.ReadFile(filepath.Join(home, "/.expandup/", filename))
 	if err != nil {
 		return nil, err
 	}
