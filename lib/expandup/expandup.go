@@ -9,8 +9,10 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 	"unicode"
+	"unicode/utf8"
 
 	"github.com/Qs-F/walkup"
 	homedir "github.com/mitchellh/go-homedir"
@@ -186,6 +188,7 @@ func getFile(filename string) ([]byte, error) {
 	}
 	list := walkup.Walkup(current, ".expandup", 0)
 	if len(list) > 0 {
+		sort.Slice(list, func(i, j int) bool { return utf8.RuneCountInString(list[i]) > utf8.RuneCountInString(list[j]) })
 		path = filepath.Join(list[0], filename)
 	}
 	b, err := ioutil.ReadFile(path)
