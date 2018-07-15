@@ -7,7 +7,7 @@ import (
 	"os"
 	"path/filepath"
 
-	"git.de-liker.com/Qs-F/expandup/lib/expandup"
+	"gitlab.com/Qs-F/expandup/lib/expandup"
 
 	"github.com/Sirupsen/logrus"
 )
