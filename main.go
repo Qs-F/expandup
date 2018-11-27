@@ -7,9 +7,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"gitlab.com/Qs-F/expandup/lib/expandup"
-
-	"github.com/Sirupsen/logrus"
+	"github.com/Qs-F/expandup/lib/expandup"
+	"github.com/sirupsen/logrus"
 )
 
 // flag
