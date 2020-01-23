@@ -180,6 +180,14 @@ func parse(slice []string) *Document {
 	return document
 }
 
+type Seek struct {
+	Filename string
+	Dirs     []string
+}
+
+func (seek *Seek) seek() {
+}
+
 func getFile(filename string) ([]byte, error) {
 	path := ""
 	current, err := os.Getwd()
