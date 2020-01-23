@@ -1,23 +1,33 @@
 package expandup
 
-import "strings"
+import (
+	"reflect"
+	"testing"
+)
 
-type Config struct {
-	OpenPrefix  string
-	OpenSuffix  string
-	ClosePrefix string
-	CloseSuffix string
+func TestDocument(t *testing.T) {
+	type T struct {
+		I string
+		O *Doc
+	}
 
-	IgnoreIndents bool
-}
+	tests := []T{
+		{
+			I: `hello
+world
 
-type Document struct {
-	s []string
-}
+world`,
+			O: &Doc{
+				s: []string{"hello", "world", "", "world"},
+			},
+		},
+	}
 
-func ToDocument(raw string) *Document {
-	d := &Document{}
-	d.s = strings.Split(raw, "\n")
-
-	return d
+	for _, test := range tests {
+		if d := Document(test.I); !reflect.DeepEqual(d, test.O) { // the order is significant
+			t.Errorf("expect %v but got %v\n", test.O, d)
+		} else {
+			t.Logf("got %v\n", d)
+		}
+	}
 }
