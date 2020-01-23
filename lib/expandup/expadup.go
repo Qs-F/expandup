@@ -1,5 +1,7 @@
 package expandup
 
+// comment
+
 import (
 	"os"
 	"path/filepath"
