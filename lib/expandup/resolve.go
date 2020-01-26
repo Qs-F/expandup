@@ -11,7 +11,10 @@ import (
 // Although ident can be the map (so that never needs to care about dups, but no map cuz of efficiency.
 func (ps *Paths) Resolve() []*Def {
 	for _, path := range *ps {
+		fext(path)
 	}
+
+	return nil
 }
 
 type Path string
