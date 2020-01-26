@@ -1,42 +1,29 @@
 package expandup
 
-// comment
+import "crypto/sha1"
 
-import (
-	"os"
-	"path/filepath"
-	"strings"
-)
-
-type path struct {
-	Name     string
-	FullPath string
+type Def struct {
+	Ident   string
+	Content string
+	SHA1    SHA1
 }
 
-const NoPaths = []path{}
-
-func Path(path string) []path {
-	p, err := filepath.Abs(path)
-	if err != nil {
-		return NoPaths
+func NewDef(ident string, content string) *Def {
+	return &Def{
+		Ident:   ident,
+		Content: content,
+		SHA1:    Sum(content),
 	}
+}
 
-	f, err := os.Open(p)
-	if err != nil {
-		return NoPaths
-	}
+type SHA1 [sha1.Size]byte
 
-	stat, err := f.Stat()
-	if err != nil {
-		return NoPaths
-	}
+func Sum(src string) SHA1 {
+	return SHA1(sha1.Sum([]byte(src)))
+}
 
-	paths := []path{}
-
-	if !stat.IsDir() {
-		paths = []path{{filepath.Base(p), p}}
-	} else {
-		
+func Comp(s1, s2 SHA1) bool {
+	return s1 == s2
 }
 
 type Config struct {
@@ -46,34 +33,4 @@ type Config struct {
 	CloseSuffix string
 
 	IgnoreIndents bool
-
-	BaseFiles []Path
-}
-
-type Doc struct {
-	s []string
-}
-
-func filter(s []string) (ret []string) {
-	for _, v := range s {
-		if v == "" {
-			continue
-		}
-		ret = append(ret, v)
-	}
-
-	return ret
-}
-
-func Document(raw string) *Doc {
-	d := &Doc{}
-	d.s = strings.Split(raw, "\n")
-
-	return d
-}
-
-type Sub struct {
-	Name    string
-	Content string
-	SHA1    []byte
 }
