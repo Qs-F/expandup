@@ -1,6 +1,9 @@
 package expandup
 
-import "crypto/sha1"
+import (
+	"bytes"
+	"crypto/sha1"
+)
 
 type Def struct {
 	Ident   string
@@ -12,18 +15,18 @@ func NewDef(ident string, content string) *Def {
 	return &Def{
 		Ident:   ident,
 		Content: content,
-		SHA1:    Sum(content),
+		SHA1:    sum(content),
 	}
 }
 
 type SHA1 [sha1.Size]byte
 
-func Sum(src string) SHA1 {
+func sum(src string) SHA1 {
 	return SHA1(sha1.Sum([]byte(src)))
 }
 
-func Comp(s1, s2 SHA1) bool {
-	return s1 == s2
+func eq(s1, s2 SHA1) bool {
+	return bytes.Equal(s1[:], s2[:])
 }
 
 type Config struct {

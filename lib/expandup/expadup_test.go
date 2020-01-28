@@ -6,14 +6,14 @@ import "testing"
 func TestNewDef(t *testing.T) {
 }
 
-func TestComp(t *testing.T) {
+func TestEq(t *testing.T) {
 	target1 := "hello world"
 	target2 := "hello world"
 
-	sum1 := Sum(target1)
-	sum2 := Sum(target2)
+	sum1 := sum(target1)
+	sum2 := sum(target2)
 
-	if !Comp(sum1, sum2) {
+	if !eq(sum1, sum2) {
 		t.Error("Comp failed")
 	}
 }
