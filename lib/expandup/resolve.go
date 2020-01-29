@@ -9,7 +9,7 @@ import (
 // Resolve determines the corresponding ident and content
 // Each directry has own priority. This func resolves the order and uniquely defines the ident.
 // Although ident can be the map (so that never needs to care about dups, but no map cuz of efficiency.
-func (ps *Paths) Resolve() []*Def {
+func (ps *paths) Resolve() []*Def {
 	for _, path := range *ps {
 		fext(path)
 	}
@@ -17,12 +17,20 @@ func (ps *Paths) Resolve() []*Def {
 	return nil
 }
 
-type Path string
+type path string
 
-type Paths []Path
+func NewPath(pathname string) path {
+	p, err := filepath.Abs(pathname)
+	if err != nil {
+		return path(filepath.Clean(pathname))
+	}
+	return path(p)
+}
+
+type paths []path
 
 type file struct {
-	Path    Path
+	Path    path
 	Content []byte
 }
 
@@ -31,7 +39,8 @@ type files []*file
 var NoFiles = &files{}
 
 // If any error occurs for os.Open or filepath.Abs, like files not found,
-func fext(path Path) *files {
+// This cannot be tested
+func fext(path path) *files {
 	p, err := filepath.Abs(string(path))
 	if err != nil {
 		return NoFiles
@@ -83,7 +92,7 @@ func fext(path Path) *files {
 			continue
 		}
 
-		*ret = append(*ret, &file{Path: Path(filepath.Join(string(p), fi.Name())), Content: b})
+		*ret = append(*ret, &file{Path: NewPath(filepath.Join(string(p), fi.Name())), Content: b})
 	}
 
 	if len(*ret) == 0 {
@@ -92,9 +101,10 @@ func fext(path Path) *files {
 	return ret
 }
 
-// // Path returns the absolute path.
-// // filepath.Abs returns error, then
-// func Path(path string) []path {
-// 	paths := []path{}
-//
-// }
+func (f *files) Len() int {
+	return len(*f)
+}
+
+func (f *files) Less(i, j int) bool {
+	return string((*f)[i].Path) > string((*f)[j].Path)
+}
